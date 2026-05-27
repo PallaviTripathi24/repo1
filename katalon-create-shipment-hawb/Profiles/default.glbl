@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalVariableEntities>
+   <description>Default execution profile for Create Shipment HAWB API tests. Replace placeholder values locally or in CI before execution.</description>
+   <name>default</name>
+   <tag></tag>
+   <defaultProfile>true</defaultProfile>
+   <GlobalVariableEntity>
+      <description>Main Boomi Gateway base URL. Do not include the resource path.</description>
+      <initValue>'https://aramex-test-gw.boomi.cloud:443'</initValue>
+      <name>BASE_URL</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Main Create Shipment HAWB method resource path.</description>
+      <initValue>'/ws/rest/api/v1/shipmentCreate/HAWBNumberMethod'</initValue>
+      <name>CREATE_SHIPMENT_HAWB_PATH</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Main API key. Use a secure Katalon profile, CI secret, or runtime override.</description>
+      <initValue>'{{API_KEY}}'</initValue>
+      <name>API_KEY</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Boomi WCF gateway execute endpoint.</description>
+      <initValue>'https://ws.staging.aramex.net/Wcfgateway/api/Gateway/Execute'</initValue>
+      <name>BOOMI_GATEWAY_URL</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Boomi Gateway API key. Use a secure Katalon profile, CI secret, or runtime override.</description>
+      <initValue>'{{BOOMI_API_KEY}}'</initValue>
+      <name>BOOMI_API_KEY</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Expected source header for direct Boomi Gateway calls.</description>
+      <initValue>'aramexdotcom'</initValue>
+      <name>BOOMI_SOURCE</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Maximum allowed API response time in milliseconds for non-functional checks.</description>
+      <initValue>5000</initValue>
+      <name>RESPONSE_TIME_SLA_MS</name>
+   </GlobalVariableEntity>
+</GlobalVariableEntities>

@@ -1,0 +1,3 @@
+import api.CreateShipmentHawbKeywords as CreateShipmentHAWB
+
+CreateShipmentHAWB.runScenarioFile('Include/resources/testdata/create_shipment_hawb_scenarios.json')
