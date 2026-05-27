@@ -1,0 +1,613 @@
+[
+  {
+    "id": "CS-HAWB-001",
+    "type": "Positive",
+    "description": "Verify API returns success for valid ProductGroup EXP",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-002",
+    "type": "Positive",
+    "description": "Verify API returns success for valid ProductGroup DOM",
+    "payloadVariant": "validDom",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-003",
+    "type": "Positive",
+    "description": "Verify valid AccountEntity is accepted",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-004",
+    "type": "Positive",
+    "description": "Verify valid AccountEntity and ProductGroup together",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-005",
+    "type": "Positive",
+    "description": "Verify optional Create Shipment fields do not block HAWB request processing",
+    "payloadVariant": "optionalFields",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-006",
+    "type": "Positive",
+    "description": "Verify multiple shipments are handled when the first shipment contains valid Details.ProductGroup",
+    "payloadVariant": "multipleShipmentsValidFirst",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-007",
+    "type": "Negative",
+    "description": "ProductGroup has invalid value",
+    "payloadVariant": "invalidProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-008",
+    "type": "Negative",
+    "description": "ProductGroup is empty",
+    "payloadVariant": "emptyProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "mandatory", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-009",
+    "type": "Negative",
+    "description": "ProductGroup is missing",
+    "payloadVariant": "missingProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "missing", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-010",
+    "type": "Negative",
+    "description": "ProductGroup is null",
+    "payloadVariant": "nullProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "null", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-011",
+    "type": "Negative",
+    "description": "AccountEntity has invalid value",
+    "payloadVariant": "invalidAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-012",
+    "type": "Negative",
+    "description": "AccountEntity is empty",
+    "payloadVariant": "emptyAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "mandatory", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-013",
+    "type": "Negative",
+    "description": "AccountEntity is missing",
+    "payloadVariant": "missingAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "missing", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-014",
+    "type": "Negative",
+    "description": "AccountEntity is null",
+    "payloadVariant": "nullAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "null", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-015",
+    "type": "Negative",
+    "description": "Both ProductGroup and AccountEntity are invalid",
+    "payloadVariant": "bothInvalid",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "AccountEntity", "Account Entity", "Entity", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-016",
+    "type": "Negative",
+    "description": "Both ProductGroup and AccountEntity are empty",
+    "payloadVariant": "bothEmpty",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "AccountEntity", "Account Entity", "required", "mandatory"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-017",
+    "type": "Edge",
+    "description": "ProductGroup in lowercase",
+    "payloadVariant": "lowerProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "EXP", "DOM", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-018",
+    "type": "Edge",
+    "description": "ProductGroup with leading and trailing spaces",
+    "payloadVariant": "spacedProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-019",
+    "type": "Edge",
+    "description": "AccountEntity in lowercase",
+    "payloadVariant": "lowerAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-020",
+    "type": "Edge",
+    "description": "AccountEntity with leading and trailing spaces",
+    "payloadVariant": "spacedAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-021",
+    "type": "Edge",
+    "description": "Very long AccountEntity",
+    "payloadVariant": "longAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "length", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-022",
+    "type": "Edge",
+    "description": "Special characters in AccountEntity",
+    "payloadVariant": "specialAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-023",
+    "type": "Edge",
+    "description": "Numeric ProductGroup",
+    "payloadVariant": "numericProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "string", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-024",
+    "type": "Edge",
+    "description": "Numeric AccountEntity",
+    "payloadVariant": "numericAccountEntity",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "string", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-025",
+    "type": "Edge",
+    "description": "Extra unknown request fields are handled consistently",
+    "payloadVariant": "extraUnknownFields",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-026",
+    "type": "Header/Gateway",
+    "description": "Missing x-api-key header",
+    "headersVariant": "missingApiKey",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["api key", "x-api-key", "unauthorized", "missing"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-027",
+    "type": "Header/Gateway",
+    "description": "Invalid x-api-key header",
+    "headersVariant": "invalidApiKey",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["api key", "x-api-key", "unauthorized", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-028",
+    "type": "Header/Gateway",
+    "description": "Missing Content-Type header",
+    "headersVariant": "missingContentType",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Content-Type", "content type", "application/json", "missing"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-029",
+    "type": "Header/Gateway",
+    "description": "Invalid Content-Type header",
+    "headersVariant": "invalidContentType",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Content-Type", "content type", "application/json", "unsupported"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-030",
+    "type": "Header/Gateway",
+    "description": "Wrong HTTP method GET",
+    "method": "GET",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["method", "GET", "POST", "not allowed"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-031",
+    "type": "Header/Gateway",
+    "description": "Wrong HTTP method PUT",
+    "method": "PUT",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["method", "PUT", "POST", "not allowed"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-032",
+    "type": "Header/Gateway",
+    "description": "Direct Boomi Gateway call with required headers",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-033",
+    "type": "Header/Gateway",
+    "description": "Direct Boomi Gateway call missing X-API-KEY",
+    "endpointType": "boomiGateway",
+    "headersVariant": "missingGatewayApiKey",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["api key", "X-API-KEY", "unauthorized", "missing"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-034",
+    "type": "Header/Gateway",
+    "description": "Direct Boomi Gateway call with invalid source header",
+    "endpointType": "boomiGateway",
+    "headersVariant": "invalidGatewaySource",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["source", "aramexdotcom", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-035",
+    "type": "Request Structure",
+    "description": "Empty request body",
+    "payloadVariant": "emptyBody",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["body", "request", "empty", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-036",
+    "type": "Request Structure",
+    "description": "Malformed JSON request body",
+    "payloadVariant": "malformedJson",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["json", "malformed", "parse", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-037",
+    "type": "Request Structure",
+    "description": "Missing ClientInfo object",
+    "payloadVariant": "missingClientInfo",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ClientInfo", "AccountEntity", "Entity", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-038",
+    "type": "Request Structure",
+    "description": "Missing Shipments array",
+    "payloadVariant": "missingShipments",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Shipments", "ProductGroup", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-039",
+    "type": "Request Structure",
+    "description": "Empty Shipments array",
+    "payloadVariant": "emptyShipments",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Shipments", "ProductGroup", "empty", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-040",
+    "type": "Request Structure",
+    "description": "Missing Details object",
+    "payloadVariant": "missingDetails",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Details", "ProductGroup", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-041",
+    "type": "Request Structure",
+    "description": "Shipments is not an array",
+    "payloadVariant": "shipmentsNotArray",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Shipments", "array", "invalid"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-042",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify ClientInfo.AccountEntity maps to Boomi Payload.Entity through successful HAWB request",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-043",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify Shipments[].Details.ProductGroup maps to Boomi Payload.ProductGroup through successful HAWB request",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-044",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify direct Gateway payload with CategoryID 3 is accepted",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-045",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify direct Gateway payload with MediaTypeID 1 is accepted",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-046",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify direct Gateway payload with PaymentMethodID 1 is accepted",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-047",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify correct Boomi Method GetHAWBNumber is used in direct Gateway payload",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-048",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify correct Boomi Contract IHAWBRangeService is used in direct Gateway payload",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "validGatewayExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-049",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify backend service method invocation through API response",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-050",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify backend business error response is mapped clearly",
+    "endpointType": "boomiGateway",
+    "headersVariant": "validGateway",
+    "payloadVariant": "gatewayBackendBusinessError",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["Entity", "AccountEntity", "invalid", "error"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-051",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify downstream timeout handling",
+    "executionMode": "manual",
+    "manualNote": "Configure backend stub or Boomi environment to force HAWBRange Service timeout, then verify HTTP 200, Success=false, meaningful timeout message, and no stack trace."
+  },
+  {
+    "id": "CS-HAWB-052",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify downstream endpoint failure handling",
+    "executionMode": "manual",
+    "manualNote": "Configure backend stub or Boomi endpoint to return unavailable/500, then verify HTTP 200, Success=false, meaningful endpoint failure message, and no stack trace."
+  },
+  {
+    "id": "CS-HAWB-053",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify process deployment to MCS Runtime",
+    "executionMode": "manual",
+    "manualNote": "Deploy Boomi process to MCS Runtime and confirm no deployment/package errors."
+  },
+  {
+    "id": "CS-HAWB-054",
+    "type": "Boomi Mapping/Integration",
+    "description": "Verify API deployment and route through Gateway",
+    "executionMode": "manual",
+    "manualNote": "Deploy API to Gateway and confirm the endpoint routes to the Create Shipment HAWB process using a Postman/Katalon valid request."
+  },
+  {
+    "id": "CS-HAWB-055",
+    "type": "Non-Functional",
+    "description": "Validate success response schema",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-056",
+    "type": "Non-Functional",
+    "description": "Validate error response schema",
+    "payloadVariant": "missingProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "required"],
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-057",
+    "type": "Non-Functional",
+    "description": "Verify no sensitive data in success response",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertNoSensitiveData": true
+  },
+  {
+    "id": "CS-HAWB-058",
+    "type": "Non-Functional",
+    "description": "Verify no sensitive data in error response",
+    "payloadVariant": "malformedJson",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "assertNoSensitiveData": true,
+    "assertErrorSchema": true
+  },
+  {
+    "id": "CS-HAWB-059",
+    "type": "Non-Functional",
+    "description": "Validate response time for valid request",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertResponseTime": true
+  },
+  {
+    "id": "CS-HAWB-060",
+    "type": "Non-Functional",
+    "description": "Validate response time for invalid request",
+    "payloadVariant": "missingProductGroup",
+    "expectedStatus": 200,
+    "expectedSuccess": false,
+    "assertResponseTime": true
+  },
+  {
+    "id": "CS-HAWB-061",
+    "type": "Non-Functional",
+    "description": "Verify repeated valid requests are handled consistently",
+    "payloadVariant": "validExp",
+    "expectedStatus": 200,
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
+  },
+  {
+    "id": "CS-HAWB-062",
+    "type": "Non-Functional",
+    "description": "Verify Katalon profile variables are used instead of hardcoded secrets",
+    "executionMode": "manual",
+    "manualNote": "Confirm BASE_URL, API_KEY, BOOMI_GATEWAY_URL, and BOOMI_API_KEY are supplied through Katalon profiles or CI secrets and no real keys are committed."
+  }
+]

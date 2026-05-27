@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description>Data-driven API automation for Create Shipment Canonical - HAWBRange Service GetHAWBNumber Method.</description>
+   <name>Run All Create Shipment HAWB API Tests</name>
+   <tag>api,boomi,create-shipment,hawb,katalon</tag>
+   <comment></comment>
+   <testCaseGuid>884a0000-0000-4000-8000-000000000001</testCaseGuid>
+</TestCaseEntity>
