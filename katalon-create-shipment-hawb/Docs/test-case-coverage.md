@@ -104,6 +104,15 @@ Content-Type: application/json
 | CS-HAWB-061 | Non-Functional | Repeated valid request consistency | Automated |
 | CS-HAWB-062 | Non-Functional | Katalon profile variables and secret handling | Manual configuration verification |
 
+## Direct Boomi Gateway scenarios (`ws.staging.aramex.net`)
+
+These scenarios use `endpointType: boomiGateway` and call `BOOMI_GATEWAY_URL` (`https://ws.staging.aramex.net/Wcfgateway/api/Gateway/Execute`):
+
+- `CS-HAWB-032`, `CS-HAWB-033`, `CS-HAWB-034`
+- `CS-HAWB-044`, `CS-HAWB-045`, `CS-HAWB-046`, `CS-HAWB-047`, `CS-HAWB-048`, `CS-HAWB-050`
+
+By default, `RUN_BOOMI_GATEWAY_TESTS` is `false` in `Profiles/default.glbl`, so they are **skipped** unless you enable the flag and are on a network that can reach the staging WCF gateway (typically corporate VPN). This avoids `HttpHostConnectException: Connection timed out` on machines that can reach the main Boomi API (`BASE_URL`) but not `ws.staging.aramex.net`.
+
 ## Manual scenarios
 
 The following scenarios are included in the JSON file as `executionMode: manual`. During suite execution they are logged as warnings, because they require deployment validation, backend simulation, or environment-level configuration:

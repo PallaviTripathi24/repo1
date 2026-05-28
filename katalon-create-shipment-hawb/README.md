@@ -34,6 +34,7 @@ Do not commit real API keys.
 | `BOOMI_API_KEY` | `{{BOOMI_API_KEY}}` | Direct Boomi Gateway API key. |
 | `BOOMI_SOURCE` | `aramexdotcom` | Direct Boomi Gateway source header. |
 | `RESPONSE_TIME_SLA_MS` | `5000` | Response-time threshold used by non-functional scenarios. |
+| `RUN_BOOMI_GATEWAY_TESTS` | `false` | When `false`, skips direct Gateway scenarios (`CS-HAWB-032`–`050`) that call `ws.staging.aramex.net`. Set `true` only on VPN/corporate network. |
 
 ## Open as a standalone Katalon project
 
@@ -82,8 +83,28 @@ For CI, pass service API keys through secure profile values or encrypted variabl
 - Manual-only scenarios are logged as warnings because they require environment manipulation, deployment validation, or backend fault injection.
 - If any automated scenario fails, the suite continues collecting failures and then marks the test run failed with a consolidated failure list.
 
+## Connection timeout on `ws.staging.aramex.net`
+
+If Katalon fails with `HttpHostConnectException: Connect to ws.staging.aramex.net:443 ... Connection timed out`, your machine cannot reach the **direct Boomi WCF Gateway** (staging). That host is usually available only on the **corporate VPN** or inside the Aramex network.
+
+**Option A — Run main API tests only (recommended locally):**
+
+1. Open **Profiles > default** (or your active profile).
+2. Keep `RUN_BOOMI_GATEWAY_TESTS` = `false` (default).
+3. Re-run **Create Shipment HAWB API Suite**.
+
+Main API scenarios (`CS-HAWB-001`–`031`, `035`–`043`, `049`, `055`–`061`) use `BASE_URL` (`aramex-test-gw.boomi.cloud`) and will still execute. Gateway scenarios are logged as **Skipped** with a warning.
+
+**Option B — Run direct Gateway scenarios:**
+
+1. Connect to corporate VPN (or a network that can reach `ws.staging.aramex.net`).
+2. Verify in a browser or `curl` that `https://ws.staging.aramex.net/Wcfgateway/api/Gateway/Execute` responds (not a connect timeout).
+3. Set `RUN_BOOMI_GATEWAY_TESTS` = `true` and set `BOOMI_API_KEY` in the profile.
+4. Re-run the suite.
+
 ## Notes before first execution
 
 - Positive and direct Gateway scenarios require valid non-production API keys.
+- Direct Gateway scenarios (`endpointType: boomiGateway`) are skipped unless `RUN_BOOMI_GATEWAY_TESTS` is `true`.
 - Header-negative scenarios intentionally use missing or invalid credentials.
 - If the Gateway returns `401`, `403`, `405`, or another non-200 status for invalid requests, Katalon will fail those scenarios because the stated client requirement is HTTP `200 OK` for all requests.

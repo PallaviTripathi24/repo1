@@ -52,9 +52,29 @@ class CreateShipmentHawbKeywords {
             return
         }
 
+        if ((scenario.endpointType ?: 'main') == 'boomiGateway' && !isBoomiGatewayTestsEnabled()) {
+            KeywordUtil.markWarning(
+                    "Skipped ${scenario.id} (direct Boomi Gateway): set RUN_BOOMI_GATEWAY_TESTS=true in the active profile " +
+                            "and connect to corporate VPN before calling ${GlobalVariable.BOOMI_GATEWAY_URL}"
+            )
+            return
+        }
+
         PayloadData payload = buildPayload(scenario)
         RequestObject request = buildRequest(scenario, payload)
-        ResponseObject response = WS.sendRequest(request, FailureHandling.STOP_ON_FAILURE)
+        ResponseObject response
+        try {
+            response = WS.sendRequest(request, FailureHandling.STOP_ON_FAILURE)
+        } catch (Throwable t) {
+            if (isConnectivityFailure(t) && (scenario.endpointType ?: 'main') == 'boomiGateway') {
+                throw new AssertionError(
+                        "${scenario.id} could not reach direct Boomi Gateway at ${GlobalVariable.BOOMI_GATEWAY_URL}. " +
+                                "Connection timed out or was refused. Connect to corporate VPN, confirm the host is reachable, " +
+                                "or leave RUN_BOOMI_GATEWAY_TESTS=false to skip gateway scenarios. Root cause: ${t.message}"
+                )
+            }
+            throw t
+        }
 
         int expectedStatus = asInt(scenario.expectedStatus, 200)
         assertEquals("HTTP status", expectedStatus, response.getStatusCode())
@@ -380,6 +400,36 @@ class CreateShipmentHawbKeywords {
         String normalizedBody = (body ?: '').toLowerCase()
         List<String> found = disallowed.findAll { normalizedBody.contains(it) }
         assertTrue("Response must not expose sensitive/internal data. Found markers: ${found}", found.isEmpty())
+    }
+
+    private static boolean isBoomiGatewayTestsEnabled() {
+        try {
+            return asBoolean(GlobalVariable.RUN_BOOMI_GATEWAY_TESTS)
+        } catch (MissingPropertyException ignored) {
+            return false
+        }
+    }
+
+    private static boolean isConnectivityFailure(Throwable t) {
+        String message = collectMessages(t).toLowerCase()
+        return message.contains('connection timed out') ||
+                message.contains('connect timed out') ||
+                message.contains('connection refused') ||
+                message.contains('no route to host') ||
+                message.contains('unknownhostexception') ||
+                message.contains('httphostconnectexception')
+    }
+
+    private static String collectMessages(Throwable t) {
+        StringBuilder builder = new StringBuilder()
+        Throwable current = t
+        while (current != null) {
+            if (current.message) {
+                builder.append(current.message).append(' ')
+            }
+            current = current.cause
+        }
+        return builder.toString()
     }
 
     private static boolean asBoolean(Object value) {

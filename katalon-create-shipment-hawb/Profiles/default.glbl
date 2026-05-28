@@ -39,4 +39,9 @@
       <initValue>5000</initValue>
       <name>RESPONSE_TIME_SLA_MS</name>
    </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description>Set to true only when ws.staging.aramex.net is reachable (typically corporate VPN). When false, direct Boomi Gateway scenarios CS-HAWB-032 through CS-HAWB-050 are skipped.</description>
+      <initValue>false</initValue>
+      <name>RUN_BOOMI_GATEWAY_TESTS</name>
+   </GlobalVariableEntity>
 </GlobalVariableEntities>
