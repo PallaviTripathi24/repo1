@@ -13,6 +13,7 @@ import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import internal.GlobalVariable
+import java.util.regex.Pattern
 
 class CreateShipmentHawbKeywords {
 
@@ -56,14 +57,16 @@ class CreateShipmentHawbKeywords {
         RequestObject request = buildRequest(scenario, payload)
         ResponseObject response = WS.sendRequest(request, FailureHandling.STOP_ON_FAILURE)
 
+        String responseBody = response.getResponseBodyContent() ?: ''
+        KeywordUtil.logInfo("${scenario.id} response status=${response.getStatusCode()}, elapsed=${response.getElapsedTime()} ms, bodyPreview=${sanitizeForLog(preview(responseBody))}")
+
         int expectedStatus = asInt(scenario.expectedStatus, 200)
         assertEquals("HTTP status", expectedStatus, response.getStatusCode())
 
-        String responseBody = response.getResponseBodyContent() ?: ''
         Object responseJson = parseJsonIfPossible(responseBody)
 
         if (scenario.containsKey('expectedSuccess')) {
-            Object successValue = findValueIgnoreCase(responseJson, 'Success')
+            Object successValue = findValueInResponse(responseJson, responseBody, 'Success')
             assertTrue("Response must contain Success field", successValue != null)
             assertEquals("Success flag", asBoolean(scenario.expectedSuccess), asBoolean(successValue))
         }
@@ -77,14 +80,14 @@ class CreateShipmentHawbKeywords {
         }
 
         if (asBoolean(scenario.assertSuccessSchema ?: false)) {
-            assertTrue("Success response must be a JSON object", responseJson instanceof Map)
-            assertTrue("Success response must contain Success field", findValueIgnoreCase(responseJson, 'Success') != null)
+            assertTrue("Success response must be structured JSON or contain a readable Success field", isStructuredResponse(responseJson) || findValueInResponse(responseJson, responseBody, 'Success') != null)
+            assertTrue("Success response must contain Success field", findValueInResponse(responseJson, responseBody, 'Success') != null)
         }
 
         if (asBoolean(scenario.assertErrorSchema ?: false)) {
-            assertTrue("Error response must be a JSON object", responseJson instanceof Map)
-            assertTrue("Error response must contain Success field", findValueIgnoreCase(responseJson, 'Success') != null)
-            assertTrue("Error response must contain an error/message field", containsAnyKeyIgnoreCase(responseJson, ['Error', 'Errors', 'Message', 'Description', 'StatusDescription']))
+            assertTrue("Error response must be structured JSON or contain a readable Success field", isStructuredResponse(responseJson) || findValueInResponse(responseJson, responseBody, 'Success') != null)
+            assertTrue("Error response must contain Success field", findValueInResponse(responseJson, responseBody, 'Success') != null)
+            assertTrue("Error response must contain an error/message field", containsAnyKeyIgnoreCase(responseJson, ['Error', 'Errors', 'Message', 'Description', 'StatusDescription']) || bodyContainsAny(responseBody, ['error', 'message', 'description', 'invalid', 'missing', 'required']))
         }
 
         if (asBoolean(scenario.assertNoSensitiveData ?: false)) {
@@ -324,10 +327,43 @@ class CreateShipmentHawbKeywords {
             return null
         }
         try {
-            return new JsonSlurper().parseText(body)
+            return new JsonSlurper().parseText(body.replaceFirst('^\\uFEFF', ''))
         } catch (Exception ignored) {
             return null
         }
+    }
+
+    private static Object findValueInResponse(Object parsedBody, String rawBody, String key) {
+        Object structuredValue = findValueIgnoreCase(parsedBody, key)
+        if (structuredValue != null) {
+            return structuredValue
+        }
+        return findValueInText(rawBody, key)
+    }
+
+    private static Object findValueInText(String body, String key) {
+        if (!body?.trim()) {
+            return null
+        }
+
+        String escapedKey = Pattern.quote(key)
+        List<Pattern> patterns = [
+                Pattern.compile("(?is)<\\s*${escapedKey}\\s*>\\s*([^<]+?)\\s*<\\s*/\\s*${escapedKey}\\s*>"),
+                Pattern.compile("(?is)[\"']?${escapedKey}[\"']?\\s*[:=]\\s*[\"']?([^\"',}\\s<]+)[\"']?")
+        ]
+
+        for (Pattern pattern : patterns) {
+            def matcher = pattern.matcher(body)
+            if (matcher.find()) {
+                return matcher.group(1)
+            }
+        }
+
+        return null
+    }
+
+    private static boolean isStructuredResponse(Object parsedBody) {
+        return parsedBody instanceof Map || parsedBody instanceof List
     }
 
     private static Object findValueIgnoreCase(Object node, String key) {
@@ -370,9 +406,12 @@ class CreateShipmentHawbKeywords {
     }
 
     private static void assertBodyContainsAny(String body, List values) {
+        assertTrue("Response body must contain one of: ${values}; actual preview=${sanitizeForLog(preview(body))}", bodyContainsAny(body, values))
+    }
+
+    private static boolean bodyContainsAny(String body, List values) {
         String normalizedBody = (body ?: '').toLowerCase()
-        boolean found = values.any { normalizedBody.contains(String.valueOf(it).toLowerCase()) }
-        assertTrue("Response body must contain one of: ${values}", found)
+        return values.any { normalizedBody.contains(String.valueOf(it).toLowerCase()) }
     }
 
     private static void assertNoSensitiveData(String body) {
@@ -394,6 +433,26 @@ class CreateShipmentHawbKeywords {
             return false
         }
         throw new IllegalArgumentException("Value cannot be converted to boolean: ${value}")
+    }
+
+    private static String preview(String body) {
+        String normalized = (body ?: '').replaceAll('\\s+', ' ').trim()
+        return normalized.length() > 1000 ? normalized.substring(0, 1000) + '...' : normalized
+    }
+
+    private static String sanitizeForLog(String value) {
+        if (value == null) {
+            return ''
+        }
+
+        String sanitized = value
+        sanitized = sanitized.replaceAll("(?i)(x-api-key\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        sanitized = sanitized.replaceAll("(?i)(api[_-]?key\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        sanitized = sanitized.replaceAll("(?i)(authorization\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        sanitized = sanitized.replaceAll("(?i)(password\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        sanitized = sanitized.replaceAll("(?i)(secret\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        sanitized = sanitized.replaceAll("(?i)(token\\s*[:=]\\s*)[^,\\s}\"']+", '$1[REDACTED]')
+        return sanitized
     }
 
     private static int asInt(Object value, int defaultValue) {

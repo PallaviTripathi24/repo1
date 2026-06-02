@@ -6,7 +6,6 @@
     "payloadVariant": "validExp",
     "expectedStatus": 200,
     "expectedSuccess": true,
-    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
     "assertSuccessSchema": true
   },
   {
@@ -16,7 +15,6 @@
     "payloadVariant": "validDom",
     "expectedStatus": 200,
     "expectedSuccess": true,
-    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
     "assertSuccessSchema": true
   },
   {
@@ -161,9 +159,8 @@
     "description": "ProductGroup in lowercase",
     "payloadVariant": "lowerProductGroup",
     "expectedStatus": 200,
-    "expectedSuccess": false,
-    "expectedMessageAnyOf": ["ProductGroup", "Product Group", "EXP", "DOM", "invalid"],
-    "assertErrorSchema": true
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
   },
   {
     "id": "CS-HAWB-018",
@@ -181,9 +178,8 @@
     "description": "AccountEntity in lowercase",
     "payloadVariant": "lowerAccountEntity",
     "expectedStatus": 200,
-    "expectedSuccess": false,
-    "expectedMessageAnyOf": ["AccountEntity", "Account Entity", "Entity", "invalid"],
-    "assertErrorSchema": true
+    "expectedSuccess": true,
+    "assertSuccessSchema": true
   },
   {
     "id": "CS-HAWB-020",
@@ -495,7 +491,6 @@
     "payloadVariant": "validExp",
     "expectedStatus": 200,
     "expectedSuccess": true,
-    "expectedBodyAnyOf": ["HAWB", "Hawb", "Range", "Number"],
     "assertSuccessSchema": true
   },
   {

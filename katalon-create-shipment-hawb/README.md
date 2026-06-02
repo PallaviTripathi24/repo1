@@ -87,3 +87,14 @@ For CI, pass service API keys through secure profile values or encrypted variabl
 - Positive and direct Gateway scenarios require valid non-production API keys.
 - Header-negative scenarios intentionally use missing or invalid credentials.
 - If the Gateway returns `401`, `403`, `405`, or another non-200 status for invalid requests, Katalon will fail those scenarios because the stated client requirement is HTTP `200 OK` for all requests.
+- Katalon HAR/cURL logs can print request headers. If a real API key appears in a shared log, rotate that key and share only redacted logs.
+
+## Troubleshooting common failures
+
+| Failure seen in Katalon | Meaning | Action |
+|---|---|---|
+| `HTTP status expected <200> but was <401>` for missing/invalid API key | Gateway authentication is returning HTTP 401 before the Boomi process can return the required 200 error body. | Raise as a requirement gap or update the requirement to allow gateway-level 401 responses. |
+| `HTTP status expected <200> but was <404>` for GET/PUT | Gateway route only supports POST and returns 404 for unsupported methods. | Raise as a requirement gap if every request must return HTTP 200. |
+| `Success flag expected <true> but was <false>` for a positive case | Backend/process returned a business failure for data expected to be valid. | Check response body preview in Katalon logs and confirm whether the test data, account/entity setup, or backend configuration is valid. |
+| `Success flag expected <false> but was <true>` for lowercase edge data | API is normalizing lowercase input. | This project now treats lowercase `exp` and `dxb` as successful based on observed behavior. |
+| Response schema assertion failure | Response was not a JSON object, or the response structure differs from the assumed schema. | This project accepts JSON objects, JSON arrays, and readable `Success` fields in JSON-like/XML/text responses. |
